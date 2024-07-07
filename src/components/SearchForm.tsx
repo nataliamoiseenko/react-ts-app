@@ -1,4 +1,5 @@
 import { Component, ChangeEvent, SyntheticEvent } from "react";
+import { RiSearchLine } from "react-icons/ri";
 
 type SearchFormProps = {
   input: string;
@@ -26,7 +27,9 @@ class SearchForm extends Component<SearchFormProps> {
             value={this.props.input}
             onChange={this.props.updateInput}
           />
-          <button type="submit">Go</button>
+          <button type="submit">
+            <RiSearchLine />
+          </button>
         </form>
       </div>
     );

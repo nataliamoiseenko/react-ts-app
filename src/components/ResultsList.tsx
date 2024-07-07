@@ -54,9 +54,16 @@ class ResultsList extends Component<ResultsListProps> {
           <ul>
             {this.props.result.map((el: Character) => (
               <li key={el.id}>
-                {el.attributes.image && (
-                  <img src={el.attributes.image} alt={el.attributes.name} />
-                )}
+                <div className="image_container">
+                  {el.attributes.image ? (
+                    <img src={el.attributes.image} alt={el.attributes.name} />
+                  ) : (
+                    <img
+                      src="https://potterdb.com/images/missing_character.svg"
+                      alt="missing_character"
+                    />
+                  )}
+                </div>
                 <h3>{el.attributes.name}</h3>
                 <p>{el.attributes.species}</p>
                 <p>{el.attributes.gender}</p>
