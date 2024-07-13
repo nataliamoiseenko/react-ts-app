@@ -1,5 +1,3 @@
-import { Component } from "react";
-
 type ResultsListProps = {
   result: [] | null;
 };
@@ -42,44 +40,36 @@ type Attributes = {
   wiki: string;
 };
 
-class ResultsList extends Component<ResultsListProps> {
-  constructor(props: ResultsListProps) {
-    super(props);
-  }
-
-  render() {
-    return (
+const ResultsList = ({ result }: ResultsListProps) => (
+  <>
+    {result && result.length > 0 ? (
+      <ul>
+        {result.map((el: Character) => (
+          <li key={el.id}>
+            <div className="image_container">
+              {el.attributes.image ? (
+                <img src={el.attributes.image} alt={el.attributes.name} />
+              ) : (
+                <img
+                  src="https://potterdb.com/images/missing_character.svg"
+                  alt="missing_character"
+                />
+              )}
+            </div>
+            <h3>{el.attributes.name}</h3>
+            <p>{el.attributes.species}</p>
+            <p>{el.attributes.gender}</p>
+          </li>
+        ))}
+      </ul>
+    ) : result ? (
       <>
-        {this.props.result && this.props.result.length > 0 ? (
-          <ul>
-            {this.props.result.map((el: Character) => (
-              <li key={el.id}>
-                <div className="image_container">
-                  {el.attributes.image ? (
-                    <img src={el.attributes.image} alt={el.attributes.name} />
-                  ) : (
-                    <img
-                      src="https://potterdb.com/images/missing_character.svg"
-                      alt="missing_character"
-                    />
-                  )}
-                </div>
-                <h3>{el.attributes.name}</h3>
-                <p>{el.attributes.species}</p>
-                <p>{el.attributes.gender}</p>
-              </li>
-            ))}
-          </ul>
-        ) : this.props.result ? (
-          <>
-            <p>No results</p>
-          </>
-        ) : (
-          <p>Start searching</p>
-        )}
+        <p>No results</p>
       </>
-    );
-  }
-}
+    ) : (
+      <p>Start searching</p>
+    )}
+  </>
+);
 
 export default ResultsList;

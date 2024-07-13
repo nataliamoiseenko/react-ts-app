@@ -1,10 +1,11 @@
-import { Component, ChangeEvent } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 import "./App.css";
 import Header from "./components/Header";
 import ResultsList from "./components/ResultsList";
 import SearchForm from "./components/SearchForm";
-import { BASE_URL, LOCAL_STORAGE_TITLE } from "./consts";
+import { BASE_URL } from "./consts";
 import { TbLoaderQuarter } from "react-icons/tb";
+import { useLastSearch } from "./shared/hooks/useLastSearch.hook";
 
 type AppState = {
   input: string;
@@ -12,60 +13,55 @@ type AppState = {
   isLoading: boolean;
 };
 
-class App extends Component<Record<string, never>, AppState> {
-  constructor(props: Record<string, never>) {
-    super(props);
-    this.state = {
-      input: "",
-      result: null,
-      isLoading: true,
-    };
-  }
+const App = () => {
+  const [appState, setAppState] = useState<AppState>({
+    input: "",
+    result: null,
+    isLoading: true,
+  });
 
-  sendSearchRequest = async () => {
-    localStorage.setItem(LOCAL_STORAGE_TITLE, this.state.input);
-    const result = await fetch(
-      `${BASE_URL}/?filter[name_cont]=${this.state.input}`,
-    );
+  const [lastSearch, setLastSearch] = useLastSearch();
+
+  useEffect(() => {
+    if (lastSearch) {
+      sendSearchRequest(lastSearch);
+      setAppState({ ...appState, input: lastSearch });
+    } else sendSearchRequest();
+  }, [lastSearch]);
+
+  const sendSearchRequest = async (value = "") => {
+    setLastSearch(value);
+    const result = await fetch(`${BASE_URL}/?filter[name_cont]=${value}`);
 
     const searchResult = await result.json();
-    this.setState({
-      input: this.state.input,
+    setAppState({
+      input: value,
       result: searchResult.data,
       isLoading: false,
     });
   };
 
-  componentDidMount(): void {
-    const initialSearch = localStorage.getItem(LOCAL_STORAGE_TITLE);
-    initialSearch
-      ? this.setState({ input: initialSearch }, () => this.sendSearchRequest())
-      : this.sendSearchRequest();
-  }
+  const updateInput = (e: ChangeEvent) =>
+    setAppState({ ...appState, input: (e.target as HTMLInputElement).value });
 
-  updateInput = (e: ChangeEvent) =>
-    this.setState({ input: (e.target as HTMLInputElement).value });
-
-  render() {
-    return (
-      <>
-        <Header />
-        <div className="container">
-          <div className={this.state.isLoading ? "blured" : ""}>
-            <SearchForm
-              input={this.state.input}
-              updateInput={this.updateInput}
-              sendSearchRequest={this.sendSearchRequest}
-              isLoading={this.state.isLoading}
-            />
-            <ResultsList result={this.state.result} />
-          </div>
-
-          {this.state.isLoading && <TbLoaderQuarter className="loader-icon" />}
+  return (
+    <>
+      <Header />
+      <div className="container">
+        <div className={appState.isLoading ? "blured" : ""}>
+          <SearchForm
+            input={appState.input}
+            updateInput={updateInput}
+            sendSearchRequest={sendSearchRequest}
+            isLoading={appState.isLoading}
+          />
+          <ResultsList result={appState.result} />
         </div>
-      </>
-    );
-  }
-}
+
+        {appState.isLoading && <TbLoaderQuarter className="loader-icon" />}
+      </div>
+    </>
+  );
+};
 
 export default App;
