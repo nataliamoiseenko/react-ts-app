@@ -1,35 +1,74 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { Route, Routes, useSearchParams } from "react-router-dom";
+import Header from "./components/Header";
+import { BASE_URL } from "./shared/consts";
+import { TbLoaderQuarter } from "react-icons/tb";
+import Home from "./components/Home";
+import Details from "./components/Details";
+import "./App.css";
+import NotFound from "./components/404";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState<Record<
+    string,
+    string | string[]
+  > | null>(null);
+
+  const openDetails = async (id: string) => {
+    setLoading(true);
+    const url = `${BASE_URL}/${id}`;
+
+    const result = await fetch(url);
+    const searchResult = await result.json();
+
+    setSelected(searchResult?.data?.attributes);
+    searchParams.set("details", "1");
+    setSearchParams(searchParams);
+    setLoading(false);
+  };
+
+  const closeDetail = () => {
+    setSelected(null);
+    searchParams.delete("details");
+    setSearchParams(searchParams);
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+      <Header />
 
-export default App
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Home
+              blured={loading || !!selected}
+              setLoading={setLoading}
+              setSearchParams={setSearchParams}
+              openDetails={openDetails}
+            />
+          }
+        >
+          <Route
+            path="/"
+            element={
+              selected && <Details {...selected} closeDetail={closeDetail} />
+            }
+          />
+        </Route>
+
+        <Route path="*" element={<NotFound />}></Route>
+      </Routes>
+
+      {loading && (
+        <div className="overlay">
+          <TbLoaderQuarter className="loader-icon" />
+        </div>
+      )}
+    </>
+  );
+};
+
+export default App;
