@@ -1,120 +1,65 @@
-import { ChangeEvent, useState, useEffect } from "react";
-import "./App.css";
+import { useState } from "react";
+import { Route, Routes, useSearchParams } from "react-router-dom";
 import Header from "./components/Header";
-import ResultsList from "./components/ResultsList";
-import SearchForm from "./components/SearchForm";
-import { BASE_URL, DEFAULT_PAGINATION_SIZE } from "./consts";
+import { BASE_URL } from "./shared/consts";
 import { TbLoaderQuarter } from "react-icons/tb";
-import { useLastSearch } from "./shared/hooks/useLastSearch.hook";
-
-export type PaginationState = {
-  currentNumber: number;
-  currentLink: string;
-  prevNumber: number;
-  prevLink: string;
-  nextNumber: number;
-  nextLink: string;
-  firstNumber: number;
-  firstLink: string;
-  lastNumber: number;
-  lastLink: string;
-  count: number;
-};
-
-type AppState = {
-  input: string;
-  result: [];
-  isLoading: boolean;
-};
+import Home from "./components/Home";
+import Details from "./components/Details";
+import "./App.css";
 
 const App = () => {
-  const [appState, setAppState] = useState<AppState>({
-    input: "",
-    result: null!,
-    isLoading: true,
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<Record<
+    string,
+    string | string[]
+  > | null>(null);
 
-  const [paginationState, setPaginationState] = useState<PaginationState>({
-    currentNumber: null!,
-    currentLink: null!,
-    prevNumber: null!,
-    prevLink: null!,
-    nextNumber: null!,
-    nextLink: null!,
-    firstNumber: null!,
-    firstLink: null!,
-    lastNumber: null!,
-    lastLink: null!,
-    count: null!,
-  });
-
-  const [lastSearch, setLastSearch] = useLastSearch();
-
-  useEffect(() => {
-    if (lastSearch) {
-      sendSearchRequest(lastSearch);
-      setAppState({ ...appState, input: lastSearch });
-    } else sendSearchRequest();
-  }, [lastSearch]);
-
-  const sendSearchRequest = async (value = "") => {
-    setLastSearch(value);
-    setAppState({ ...appState, input: value });
-
-    const url = `${BASE_URL}/?filter[name_cont]=${value}&page[size]=${DEFAULT_PAGINATION_SIZE}`;
-    handleRequest(url);
-  };
-
-  const handleRequest = async (url: string) => {
-    setAppState({ ...appState, isLoading: true });
+  const openDetails = async (id: string) => {
+    setLoading(true);
+    const url = `${BASE_URL}/${id}`;
 
     const result = await fetch(url);
     const searchResult = await result.json();
 
-    setAppState({
-      ...appState,
-      result: searchResult.data,
-      isLoading: false,
-    });
-
-    setPaginationState({
-      currentNumber: searchResult?.meta?.pagination?.current,
-      currentLink: searchResult?.links?.current,
-      prevNumber: searchResult?.meta?.pagination?.prev,
-      prevLink: searchResult?.links?.prev,
-      nextNumber: searchResult?.meta?.pagination?.next,
-      nextLink: searchResult?.links?.next,
-      firstNumber: searchResult?.meta?.pagination?.first,
-      firstLink: searchResult?.links?.first,
-      lastNumber: searchResult?.meta?.pagination?.last,
-      lastLink: searchResult?.links?.last,
-      count: searchResult?.meta?.pagination?.records,
-    });
+    setSelected(searchResult?.data?.attributes);
+    searchParams.set("details", "1");
+    setSearchParams(searchParams);
+    setLoading(false);
   };
 
-  const updateInput = (e: ChangeEvent) =>
-    setAppState({ ...appState, input: (e.target as HTMLInputElement).value });
+  const closeDetail = () => {
+    setSelected(null);
+    searchParams.delete("details");
+    setSearchParams(searchParams);
+  };
 
   return (
     <>
       <Header />
-      <div className={appState.isLoading ? "blured" : ""}>
-        <SearchForm
-          input={appState.input}
-          updateInput={updateInput}
-          sendSearchRequest={sendSearchRequest}
-          isLoading={appState.isLoading}
-        />
-        <div className="container">
-          <ResultsList
-            result={appState.result}
-            pagination={paginationState}
-            paginationHandler={handleRequest}
-          />
-        </div>
-      </div>
 
-      {appState.isLoading && (
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Home
+              blured={loading || !!selected}
+              setLoading={setLoading}
+              setSearchParams={setSearchParams}
+              openDetails={openDetails}
+            />
+          }
+        >
+          <Route
+            path="/"
+            element={
+              selected && <Details {...selected} closeDetail={closeDetail} />
+            }
+          />
+        </Route>
+      </Routes>
+
+      {loading && (
         <div className="overlay">
           <TbLoaderQuarter className="loader-icon" />
         </div>

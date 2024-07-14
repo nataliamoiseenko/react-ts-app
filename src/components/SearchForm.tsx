@@ -1,12 +1,6 @@
-import { ChangeEvent, SyntheticEvent } from "react";
+import type { SyntheticEvent } from "react";
+import type { SearchFormProps } from "../shared/types";
 import { RiSearchLine } from "react-icons/ri";
-
-type SearchFormProps = {
-  input: string;
-  updateInput: (e: ChangeEvent) => void;
-  sendSearchRequest: (value: string) => void;
-  isLoading?: boolean;
-};
 
 const SearchForm = ({
   input,

@@ -1,12 +1,7 @@
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import { AiOutlineArrowRight } from "react-icons/ai";
-import "../App.css";
-import { PaginationState } from "../App";
-import { DEFAULT_PAGINATION_SIZE } from "../consts";
-
-type PaginationProps = PaginationState & {
-  paginationHandler: (requestUrl: string) => void;
-};
+import { DEFAULT_PAGINATION_SIZE } from "../shared/consts";
+import type { PaginationProps } from "../shared/types";
 
 const Pagination = ({
   currentNumber,

@@ -1,4 +1,5 @@
 #root {
+  position: relative;
   flex-grow: 1;
   max-width: 1280px;
   margin: 0 auto;
@@ -27,7 +28,7 @@
   animation: rotating 1s linear infinite;
 }
 
-.blured {
+.home__blured {
   filter: blur(3px);
   pointer-events: none;
 }
@@ -62,7 +63,6 @@ ul {
 
 ul li {
   width: 250px;
-  height: 370px;
   margin-bottom: 15px;
   padding: 10px;
   display: flex;
@@ -73,8 +73,12 @@ ul li {
   box-shadow: rgba(0, 0, 0, 0.3) 4px 4px 6px;
 }
 
+ul li button {
+  margin-top: auto;
+}
+
 p {
-  margin-top: 0;
+  margin: 0;
 }
 
 .image_container {
@@ -116,6 +120,26 @@ img {
 .pagination__item._current {
   color: #58005e;
   background-color: #eaeaea;
+}
+
+.details {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 50%;
+  padding: 1.5rem;
+  background-color: #eaeaea;
+}
+
+.details__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.details__close:hover {
+  cursor: pointer;
 }
 
 @keyframes rotating {

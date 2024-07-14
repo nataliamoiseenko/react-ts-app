@@ -1,54 +1,11 @@
-import type { PaginationState } from "../App";
+import type { Character, ResultsListProps } from "../shared/types";
 import Pagination from "./Pagination";
-
-type ResultsListProps = {
-  result: [] | null;
-  pagination: PaginationState;
-  paginationHandler: (requestUrl: string) => void;
-};
-
-type Character = {
-  id: string;
-  attributes: Attributes;
-  links: {
-    self: string;
-  };
-  type: string;
-};
-
-type Attributes = {
-  alias_names: string[];
-  animagus: string;
-  blood_status: string;
-  boggart: string;
-  born: string;
-  died: string;
-  eye_color: string;
-  family_members: string[];
-  gender: string;
-  hair_color: string;
-  height: string;
-  house: string;
-  image: string;
-  jobs: string[];
-  marital_status: string;
-  name: string;
-  nationality: string;
-  patronus: string;
-  romances: string[];
-  skin_color: string;
-  slug: string;
-  species: string;
-  titles: string[];
-  wands: string[];
-  weight: string;
-  wiki: string;
-};
 
 const ResultsList = ({
   result,
   pagination,
   paginationHandler,
+  handleDetailSelect,
 }: ResultsListProps) => (
   <>
     {result && result.length > 0 ? (
@@ -69,18 +26,20 @@ const ResultsList = ({
               <h3>{el.attributes.name}</h3>
               <p>{el.attributes.species}</p>
               <p>{el.attributes.gender}</p>
+              <button
+                onClick={handleDetailSelect.bind(null, el.id)}
+                className="button__view-character"
+              >
+                View Character
+              </button>
             </li>
           ))}
         </ul>
 
         <Pagination {...pagination} paginationHandler={paginationHandler} />
       </>
-    ) : result ? (
-      <>
-        <p>No results</p>
-      </>
     ) : (
-      <p>Start searching</p>
+      <p>No results</p>
     )}
   </>
 );

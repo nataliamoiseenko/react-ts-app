@@ -30,10 +30,13 @@ body {
   flex-direction: column;
 }
 
-h1 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
-  /* font-size: 3.2em;
-  line-height: 1.1; */
 }
 
 button {
@@ -49,6 +52,18 @@ button {
 }
 button:hover {
   border-color: #58005e;
+}
+
+.button__view-character {
+  width: 100%;
+  background-color: #58005e;
+  color: rgba(255, 255, 255, 0.87);
+  transition: all 0.25s;
+}
+
+.button__view-character:hover {
+  color: #58005e;
+  background-color: inherit;
 }
 
 @media (prefers-color-scheme: light) {
