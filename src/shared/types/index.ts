@@ -3,14 +3,14 @@ import type { ChangeEvent } from "react";
 export type PaginationState = {
   currentNumber: number;
   currentLink: string;
-  prevNumber: number;
-  prevLink: string;
-  nextNumber: number;
-  nextLink: string;
-  firstNumber: number;
-  firstLink: string;
-  lastNumber: number;
-  lastLink: string;
+  prevNumber?: number;
+  prevLink?: string;
+  nextNumber?: number;
+  nextLink?: string;
+  firstNumber?: number;
+  firstLink?: string;
+  lastNumber?: number;
+  lastLink?: string;
   count: number;
 };
 
