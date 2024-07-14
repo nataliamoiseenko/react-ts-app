@@ -1,5 +1,10 @@
+import type { PaginationState } from "../App";
+import Pagination from "./Pagination";
+
 type ResultsListProps = {
   result: [] | null;
+  pagination: PaginationState;
+  paginationHandler: (requestUrl: string) => void;
 };
 
 type Character = {
@@ -40,28 +45,36 @@ type Attributes = {
   wiki: string;
 };
 
-const ResultsList = ({ result }: ResultsListProps) => (
+const ResultsList = ({
+  result,
+  pagination,
+  paginationHandler,
+}: ResultsListProps) => (
   <>
     {result && result.length > 0 ? (
-      <ul>
-        {result.map((el: Character) => (
-          <li key={el.id}>
-            <div className="image_container">
-              {el.attributes.image ? (
-                <img src={el.attributes.image} alt={el.attributes.name} />
-              ) : (
-                <img
-                  src="https://potterdb.com/images/missing_character.svg"
-                  alt="missing_character"
-                />
-              )}
-            </div>
-            <h3>{el.attributes.name}</h3>
-            <p>{el.attributes.species}</p>
-            <p>{el.attributes.gender}</p>
-          </li>
-        ))}
-      </ul>
+      <>
+        <ul>
+          {result.map((el: Character) => (
+            <li key={el.id}>
+              <div className="image_container">
+                {el.attributes.image ? (
+                  <img src={el.attributes.image} alt={el.attributes.name} />
+                ) : (
+                  <img
+                    src="https://potterdb.com/images/missing_character.svg"
+                    alt="missing_character"
+                  />
+                )}
+              </div>
+              <h3>{el.attributes.name}</h3>
+              <p>{el.attributes.species}</p>
+              <p>{el.attributes.gender}</p>
+            </li>
+          ))}
+        </ul>
+
+        <Pagination {...pagination} paginationHandler={paginationHandler} />
+      </>
     ) : result ? (
       <>
         <p>No results</p>

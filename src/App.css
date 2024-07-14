@@ -1,7 +1,8 @@
 #root {
+  flex-grow: 1;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem 2rem;
   text-align: center;
 }
 
@@ -9,18 +10,26 @@
   position: relative;
 }
 
+.overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .loader-icon {
   width: 50px;
   height: auto;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   animation: rotating 1s linear infinite;
 }
 
 .blured {
   filter: blur(3px);
+  pointer-events: none;
 }
 
 form {
@@ -79,6 +88,34 @@ img {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.pagination {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pagination__container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.pagination__item {
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination__item._current {
+  color: #58005e;
+  background-color: #eaeaea;
 }
 
 @keyframes rotating {
