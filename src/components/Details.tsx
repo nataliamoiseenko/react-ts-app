@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import type { DetailsProps } from "../shared/types";
 
@@ -13,8 +14,24 @@ const Details = ({
   blood_status,
   eye_color,
 }: DetailsProps) => {
+  const detailContainer = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const listener = (event: MouseEvent) => {
+      if (detailContainer.current?.contains(event.target as Element)) return;
+
+      closeDetail();
+    };
+
+    document.addEventListener("click", listener);
+
+    return () => {
+      document.removeEventListener("click", listener);
+    };
+  }, [closeDetail]);
+
   return (
-    <div className="details">
+    <div className="details" ref={detailContainer}>
       <AiOutlineClose onClick={closeDetail} className="details__close" />
 
       {image ? (
