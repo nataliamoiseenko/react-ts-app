@@ -6,10 +6,11 @@ import { TbLoaderQuarter } from "react-icons/tb";
 import Home from "./components/Home";
 import Details from "./components/Details";
 import "./App.css";
+import NotFound from "./components/404";
 
 const App = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<Record<
     string,
     string | string[]
@@ -57,6 +58,8 @@ const App = () => {
             }
           />
         </Route>
+
+        <Route path="*" element={<NotFound />}></Route>
       </Routes>
 
       {loading && (
